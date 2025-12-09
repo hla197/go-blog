@@ -7,7 +7,6 @@ import (
 	"github.com/gavin/blog/models"
 	"github.com/gavin/blog/utils"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 type CreateCommentRequest struct {
@@ -66,9 +65,7 @@ func GetUserComment(c *gin.Context) {
 		return
 	}
 	var posts []models.Comment
-	config.DB.Where("user_id", userId).Preload("Comments", func(db *gorm.DB) *gorm.DB {
-		return db.Order("ID desc").Limit(10) // 限制只加载 10 条关联数据
-	}).Find(&posts)
+	config.DB.Where("user_id", userId).Preload("Comments").Find(&posts)
 
 	utils.Success(c, posts, "")
 	return
@@ -77,9 +74,7 @@ func GetUserComment(c *gin.Context) {
 func GetComment(c *gin.Context) {
 	id := c.Param("id")
 	var post models.Comment
-	if err := config.DB.Where("id", id).Preload("Comments", func(db *gorm.DB) *gorm.DB {
-		return db.Limit(10) // 限制只加载 10 条关联数据
-	}).First(&post).Error; err != nil {
+	if err := config.DB.Where("id", id).Preload("Post").First(&post).Error; err != nil {
 		utils.Fail(c, errors.COMMENT_ERROR, "评论没找到")
 		return
 	}
