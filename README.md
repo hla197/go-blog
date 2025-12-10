@@ -56,15 +56,15 @@ go run cmd/main.go
 
 ## 📡 核心功能
 ### ✅ 用户认证
-#### 登录 / 注册（server/auth.go）
+#### 登录 / 注册（handlers/auth.go）
 #### JWT 生成与验证（utils/jwt.go）
 #### 认证中间件（middleware/auth.go）
 ### ✅ 文章管理
-#### 文章增删改查（server/post.go）
+#### 文章增删改查（handlers/post.go）
 #### 分页列表（utils/page.go）
 #### 响应格式统一（utils/response.go）
 ### ✅ 评论功能
-#### 评论发布与查询（server/comment.go）
+#### 评论发布与查询（handlers/comment.go）
 #### 关联文章与用户（models/comment.go）
 ### ✅ 安全与日志
 #### CORS 跨域支持（middleware/cors.go）
