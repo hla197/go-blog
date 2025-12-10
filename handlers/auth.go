@@ -1,4 +1,4 @@
-package server
+package handlers
 
 import (
 	"github.com/gavin/blog/config"
@@ -9,6 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
+
+type AuthHandler struct{}
 
 type RegisterRequest struct {
 	*utils.FieldValidate
@@ -29,7 +31,7 @@ type AuthResponse struct {
 	Token    string `json:"token"`
 }
 
-func Login(c *gin.Context) {
+func (h *AuthHandler) Login(c *gin.Context) {
 	var req LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		var validate utils.FieldValidateIF = req
@@ -63,7 +65,7 @@ func Login(c *gin.Context) {
 	return
 }
 
-func Register(c *gin.Context) {
+func (h *AuthHandler) Register(c *gin.Context) {
 	var req RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		var validate utils.FieldValidateIF = req

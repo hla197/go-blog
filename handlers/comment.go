@@ -1,4 +1,4 @@
-package server
+package handlers
 
 import (
 	"github.com/gavin/blog/config"
@@ -8,6 +8,8 @@ import (
 	"github.com/gavin/blog/utils"
 	"github.com/gin-gonic/gin"
 )
+
+type CommentHandle struct{}
 
 type CreateCommentRequest struct {
 	*utils.FieldValidate
@@ -29,7 +31,7 @@ type QueryCommentsRequest struct {
 	UserId int    `json:"user_id"`
 }
 
-func GetPageComments(c *gin.Context) {
+func (h *CommentHandle) GetPageComments(c *gin.Context) {
 	// 获取分页
 	var req QueryCommentsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -58,7 +60,7 @@ func GetPageComments(c *gin.Context) {
 	return
 }
 
-func GetUserComment(c *gin.Context) {
+func (h *CommentHandle) GetUserComment(c *gin.Context) {
 	userId, exists := c.Get("user_id")
 	if !exists {
 		utils.Fail(c, errors.COMMENT_ERROR, "用户未登录")
@@ -71,7 +73,7 @@ func GetUserComment(c *gin.Context) {
 	return
 }
 
-func GetComment(c *gin.Context) {
+func (h *CommentHandle) GetComment(c *gin.Context) {
 	id := c.Param("id")
 	var post models.Comment
 	if err := config.DB.Where("id", id).Preload("Post").First(&post).Error; err != nil {
@@ -82,7 +84,7 @@ func GetComment(c *gin.Context) {
 	return
 }
 
-func AddComment(c *gin.Context) {
+func (h *CommentHandle) AddComment(c *gin.Context) {
 	// 新增评论
 	var req CreateCommentRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -115,7 +117,7 @@ func AddComment(c *gin.Context) {
 	utils.Success(c, "", "添加成功")
 }
 
-func UpdateComment(c *gin.Context) {
+func (h *CommentHandle) UpdateComment(c *gin.Context) {
 	// 新增评论
 	var req UpdateCommentRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -154,7 +156,7 @@ func UpdateComment(c *gin.Context) {
 	utils.Success(c, "", "修改评论成功")
 }
 
-func DeleteComment(c *gin.Context) {
+func (h *CommentHandle) DeleteComment(c *gin.Context) {
 	userId, exists := c.Get("user_id")
 	if !exists {
 		utils.Fail(c, errors.COMMENT_ERROR, "用户未登录")

@@ -26,7 +26,7 @@ go-blog/
 │   └── user.go             # 用户模型
 ├── routers/                # 路由模块
 │   └── routers.go          # 路由注册
-├── server/                 # 业务逻辑层
+├── handlers/                 # 业务逻辑层
 │   ├── auth.go             # 认证逻辑
 │   ├── comment.go          # 评论逻辑
 │   └── post.go             # 文章逻辑

@@ -28,7 +28,7 @@ func main() {
 	gin.DefaultWriter = write
 	gin.DefaultErrorWriter = write
 
-	logger.Log.Infof("starting server")
+	logger.Log.Infof("starting handlers")
 
 	router := gin.New()
 	router.Use(middleware.GinLogMiddleware())
@@ -42,7 +42,7 @@ func main() {
 	routers.InitApi(router)
 
 	port := os.Getenv("PORT")
-	logger.Log.Infof("server started  addr %s", port)
+	logger.Log.Infof("handlers started  addr %s", port)
 	router.Run(port) // 监听并在 0.0.0.0:8080 上启动服务
 }
 

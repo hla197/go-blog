@@ -3,8 +3,8 @@ package routers
 import (
 	"net/http"
 
+	"github.com/gavin/blog/handlers"
 	"github.com/gavin/blog/middleware"
-	"github.com/gavin/blog/server"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,30 +13,34 @@ func InitApi(router *gin.Engine) {
 		c.String(http.StatusOK, "hello world")
 	})
 
+	authHandler := &handlers.AuthHandler{}
+	commentHandle := &handlers.CommentHandle{}
+	postHandler := &handlers.PostHandler{}
+
 	// 公共接口（不需要 token）
 	public := router.Group("/auth")
 	{
-		public.POST("/login", server.Login)
-		public.POST("/register", server.Register)
+		public.POST("/login", authHandler.Login)
+		public.POST("/register", authHandler.Register)
 	}
 
 	auth := router.Group("")
 	auth.Use(middleware.JWTAuthMiddleware())
 	{
 		post := auth.Group("/post")
-		post.POST("add", server.AddPost)
-		post.POST("update", server.UpdatePost)
-		post.GET(":id", server.GetPost)
-		post.DELETE(":id", server.DeletePost)
-		post.GET("user", server.GetUserPost)
-		post.POST("page", server.GetPagePosts)
+		post.POST("add", postHandler.AddPost)
+		post.POST("update", postHandler.UpdatePost)
+		post.GET(":id", postHandler.GetPost)
+		post.DELETE(":id", postHandler.DeletePost)
+		post.GET("user", postHandler.GetUserPost)
+		post.POST("page", postHandler.GetPagePosts)
 
 		comment := auth.Group("/comment")
-		comment.POST("add", server.AddComment)
-		comment.POST("update", server.UpdateComment)
-		comment.GET(":id", server.GetComment)
-		comment.DELETE(":id", server.DeleteComment)
-		comment.GET("user", server.GetUserComment)
-		comment.POST("page", server.GetPageComments)
+		comment.POST("add", commentHandle.AddComment)
+		comment.POST("update", commentHandle.UpdateComment)
+		comment.GET(":id", commentHandle.GetComment)
+		comment.DELETE(":id", commentHandle.DeleteComment)
+		comment.GET("user", commentHandle.GetUserComment)
+		comment.POST("page", commentHandle.GetPageComments)
 	}
 }

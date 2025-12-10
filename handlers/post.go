@@ -1,4 +1,4 @@
-package server
+package handlers
 
 import (
 	"github.com/gavin/blog/config"
@@ -9,6 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
+
+type PostHandler struct{}
 
 type CreatePostRequest struct {
 	*utils.FieldValidate
@@ -29,7 +31,7 @@ type QueryPostsRequest struct {
 	UserId int `json:"user_id"`
 }
 
-func GetPagePosts(c *gin.Context) {
+func (h *PostHandler) GetPagePosts(c *gin.Context) {
 	// 获取分页
 	var req QueryPostsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -55,7 +57,7 @@ func GetPagePosts(c *gin.Context) {
 	return
 }
 
-func GetUserPost(c *gin.Context) {
+func (h *PostHandler) GetUserPost(c *gin.Context) {
 	userId, exists := c.Get("user_id")
 	if !exists {
 		utils.Fail(c, errors.POST_ERROR, "用户未登录")
@@ -70,7 +72,7 @@ func GetUserPost(c *gin.Context) {
 	return
 }
 
-func GetPost(c *gin.Context) {
+func (h *PostHandler) GetPost(c *gin.Context) {
 	id := c.Param("id")
 	var post models.Post
 	if err := config.DB.Where("id", id).Preload("Comments", func(db *gorm.DB) *gorm.DB {
@@ -83,7 +85,7 @@ func GetPost(c *gin.Context) {
 	return
 }
 
-func AddPost(c *gin.Context) {
+func (h *PostHandler) AddPost(c *gin.Context) {
 	// 新增文章
 	var req CreatePostRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -110,7 +112,7 @@ func AddPost(c *gin.Context) {
 	utils.Success(c, "", "添加成功")
 }
 
-func UpdatePost(c *gin.Context) {
+func (h *PostHandler) UpdatePost(c *gin.Context) {
 	// 新增文章
 	var req UpdatePostRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -144,7 +146,7 @@ func UpdatePost(c *gin.Context) {
 	utils.Success(c, "", "修改文章成功")
 }
 
-func DeletePost(c *gin.Context) {
+func (h *PostHandler) DeletePost(c *gin.Context) {
 	userId, exists := c.Get("user_id")
 	if !exists {
 		utils.Fail(c, errors.POST_ERROR, "用户未登录")
